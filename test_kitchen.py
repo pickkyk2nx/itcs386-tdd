@@ -7,7 +7,7 @@
 # [ ] 200 g + 1 oz, reduced to grams using a conversion rate
 # [ ] (200 g + 1 oz) * 2
 
-from kitchen import grams, ounces
+from kitchen import Converter, grams, ounces
 
 
 def test_multiplication():
@@ -32,3 +32,9 @@ def test_grams_are_not_ounces():
 
 def test_multiplication_preserves_unit():
     assert ounces(1).times(2) == ounces(2)
+
+
+def test_simple_addition():
+    total = grams(200).plus(grams(300))
+    converter = Converter()
+    assert converter.reduce(total, "g") == grams(500)
