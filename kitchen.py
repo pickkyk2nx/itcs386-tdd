@@ -9,8 +9,8 @@ class Quantity:
     def plus(self, other):
         return Sum(self, other)
 
-    def reduce(self, unit):
-        return self
+    def reduce(self, converter, unit):
+        return Quantity(self.amount * converter.rate(self.unit, unit), unit)
 
     def __eq__(self, other):
         if not isinstance(other, Quantity):
@@ -30,8 +30,19 @@ def ounces(amount):
 
 
 class Converter:
+    def __init__(self):
+        self.rates = {}
+
+    def add_rate(self, from_unit, to_unit, rate):
+        self.rates[(from_unit, to_unit)] = rate
+
+    def rate(self, from_unit, to_unit):
+        if from_unit == to_unit:
+            return 1
+        return self.rates[(from_unit, to_unit)]
+
     def reduce(self, quantity, unit):
-        return quantity.reduce(unit)
+        return quantity.reduce(self, unit)
 
 
 class Sum:
@@ -39,5 +50,7 @@ class Sum:
         self.left = left
         self.right = right
 
-    def reduce(self, unit):
-        return Quantity(self.left.amount + self.right.amount, unit)
+    def reduce(self, converter, unit):
+        left = self.left.reduce(converter, unit)
+        right = self.right.reduce(converter, unit)
+        return Quantity(left.amount + right.amount, unit)
