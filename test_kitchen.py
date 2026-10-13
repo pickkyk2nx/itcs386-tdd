@@ -4,7 +4,7 @@
 # [x] Two quantities with the same amount and unit are equal
 # [x] 1 oz is not the same as 1 g
 # [x] 200 g + 300 g = 500 g
-# [ ] 200 g + 1 oz, reduced to grams using a conversion rate
+# [x] 200 g + 1 oz, reduced to grams using a conversion rate
 # [ ] (200 g + 1 oz) * 2
 
 from kitchen import Converter, grams, ounces
@@ -38,3 +38,15 @@ def test_simple_addition():
     total = grams(200).plus(grams(300))
     converter = Converter()
     assert converter.reduce(total, "g") == grams(500)
+
+
+def test_reduce_same_unit_needs_no_rate():
+    converter = Converter()
+    assert converter.reduce(grams(500), "g") == grams(500)
+
+
+def test_mixed_addition():
+    converter = Converter()
+    converter.add_rate("oz", "g", 28)
+    total = grams(200).plus(ounces(1))
+    assert converter.reduce(total, "g") == grams(228)
