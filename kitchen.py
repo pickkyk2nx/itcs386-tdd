@@ -7,7 +7,7 @@ class Quantity:
         return Quantity(self.amount * multiplier, self.unit)
 
     def plus(self, other):
-        return grams(500)
+        return Sum(self, other)
 
     def __eq__(self, other):
         if not isinstance(other, Quantity):
@@ -29,3 +29,9 @@ def ounces(amount):
 class Converter:
     def reduce(self, quantity, unit):
         return quantity
+
+
+class Sum:
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
